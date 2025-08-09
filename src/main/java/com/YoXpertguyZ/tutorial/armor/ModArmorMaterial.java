@@ -2,76 +2,76 @@ package com.YoXpertguyZ.tutorial.armor;
 
 import com.YoXpertguyZ.tutorial.Tutorial;
 import com.YoXpertguyZ.tutorial.util.RegistryHandler;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 import java.util.function.Supplier;
 
-public enum ModArmorMaterial implements IArmorMaterial {
+public enum ModArmorMaterial implements ArmorMaterial {
 
-    RUBY(Tutorial.MOD_ID + ":ruby", 45, new int[] { 4, 8, 10, 4}, 50,
-            SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 15.0F, () -> { return Ingredient.fromItems(RegistryHandler.RUBY.get()); });
+    RUBY("ruby", 45, new int[]{4, 8, 10, 4}, 50,
+            SoundEvents.ARMOR_EQUIP_GENERIC, 15.0F, () -> Ingredient.of(RegistryHandler.RUBY.get()));
 
-    private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
+    private static final int[] DURABILITY_PER_SLOT = new int[]{13, 15, 16, 11};
     private final String name;
-    private final int maxDamageFactor;
-    private final int[] damageReductionAmountArray;
-    private final int enchantability;
-    private final SoundEvent soundEvent;
+    private final int durabilityMultiplier;
+    private final int[] protectionAmounts;
+    private final int enchantmentValue;
+    private final SoundEvent equipSound;
     private final float toughness;
-    private final Supplier<Ingredient> repairMaterial;
+    private final Supplier<Ingredient> repairIngredient;
 
-    ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability,
-                     SoundEvent soundEvent, float toughness, Supplier<Ingredient> repairMaterial) {
+    ModArmorMaterial(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantmentValue,
+                     SoundEvent equipSound, float toughness, Supplier<Ingredient> repairIngredient) {
         this.name = name;
-        this.maxDamageFactor = maxDamageFactor;
-        this.damageReductionAmountArray = damageReductionAmountArray;
-        this.enchantability = enchantability;
-        this.soundEvent = soundEvent;
+        this.durabilityMultiplier = durabilityMultiplier;
+        this.protectionAmounts = protectionAmounts;
+        this.enchantmentValue = enchantmentValue;
+        this.equipSound = equipSound;
         this.toughness = toughness;
-        this.repairMaterial = repairMaterial;
-
-
-    }
-
-
-    @Override
-    public int getDurability(EquipmentSlotType slotIn) {
-        return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.maxDamageFactor;
+        this.repairIngredient = repairIngredient;
     }
 
     @Override
-    public int getDamageReductionAmount(EquipmentSlotType slotIn) {
-        return this.damageReductionAmountArray[slotIn.getIndex()];
+    public int getDurabilityForType(ArmorItem.Type type) {
+        return DURABILITY_PER_SLOT[type.getSlot().getIndex()] * this.durabilityMultiplier;
     }
 
     @Override
-    public int getEnchantability() {
-        return this.enchantability;
+    public int getDefenseForType(ArmorItem.Type type) {
+        return this.protectionAmounts[type.getSlot().getIndex()];
     }
 
     @Override
-    public SoundEvent getSoundEvent() {
-        return this.soundEvent;
+    public int getEnchantmentValue() {
+        return this.enchantmentValue;
     }
 
     @Override
-    public Ingredient getRepairMaterial() {
-        return this.getRepairMaterial();
+    public SoundEvent getEquipSound() {
+        return this.equipSound;
     }
-    @OnlyIn(Dist.CLIENT)
+
+    @Override
+    public Ingredient getRepairIngredient() {
+        return this.repairIngredient.get();
+    }
+
     @Override
     public String getName() {
-        return this.name;
+        return Tutorial.MOD_ID + ":" + this.name;
     }
 
     @Override
     public float getToughness() {
         return this.toughness;
+    }
+
+    @Override
+    public float getKnockbackResistance() {
+        return 0.0F;
     }
 }

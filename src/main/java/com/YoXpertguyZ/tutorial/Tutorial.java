@@ -1,8 +1,8 @@
 package com.YoXpertguyZ.tutorial;
 
 import com.YoXpertguyZ.tutorial.util.RegistryHandler;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -33,9 +33,9 @@ public class Tutorial
 
     private void doClientStuff(final FMLClientSetupEvent event) { }
 
-    public static final ItemGroup TAB = new ItemGroup("tutorialTab") {
+    public static final CreativeModeTab TAB = new CreativeModeTab("tutorialTab") {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(RegistryHandler.RUBY.get());
         }
     };
